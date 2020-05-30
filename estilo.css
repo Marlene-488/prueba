@@ -1,0 +1,88 @@
+// The color that will be at the beginning and the end of the loop.
+$firstColor: #0057B8;
+
+// The list of all the used colors. You can add or remove colors, the animation stays fluid. The $first-color must remain at the end of the list though.
+$listColors: #FFF, #F8A527, #266D7F, #82A, $firstColor;
+
+// The number of circles. This number has to match the number of .circle in the HAML.
+$circleNumber: 10;
+
+// Other parameters
+$circleBaseSize: 10px; // Put an even number here to avoid visual artefacts
+$circleBorderWidth: $circleBaseSize/2+1; // This value makes all the circle borders touch each other. You can put a smaller value if you want space between the circles.
+$delayCoeff: 0.25s; // Play with this coefficient affects the animation. Go for it!
+
+
+
+*, *:after, *:before {
+  margin: 0;
+  padding: 0;
+  -moz-box-sizing: border-box;
+  box-sizing: border-box;
+}
+
+body {
+  line-height: 100vh;
+  text-align: center;
+  background-color: #0057B8;
+}
+
+#container {
+  display: inline-block;
+  width: length($listColors)*$circleBaseSize*2;
+  height: length($listColors)*$circleBaseSize*2;
+  position: relative;
+  vertical-align: middle;
+  
+  .circle {
+    border-radius: 100%;
+    border-style: solid;
+    border-color: transparent;
+    border-width: $circleBorderWidth;
+
+    @for $i from 1 through $circleNumber {
+
+      &:nth-child(#{$i}) {
+        width: $i*$circleBaseSize;
+        height: $i*$circleBaseSize;
+        -webkit-animation: pweek #{length($listColors)}s linear infinite;
+        animation: pweek #{length($listColors)*5}s linear infinite;
+        -webkit-animation-delay: $i*$delayCoeff;
+
+        position: absolute;
+        top: ($circleNumber*$circleBaseSize/2)-($i*$circleBaseSize/2);
+        left: ($circleNumber*$circleBaseSize/2)-($i*$circleBaseSize/2);
+      }
+    }
+  }
+  
+  &:hover {
+    .circle {
+      -webkit-animation-play-state: paused;
+      animation-play-state: paused;
+    }
+  }
+}
+
+
+@-webkit-keyframes pweek {
+  0% {
+    border-color: $firstColor;
+  }
+  @for $i from 1 through length($listColors) {
+    #{$i*(100/length($listColors))}% {
+      border-color: nth($listColors, $i);
+    }
+  }
+}
+
+@keyframes pweek {
+  0% {
+    border-color: $firstColor;
+  }
+  @for $i from 1 through length($listColors) {
+    #{$i*(100/length($listColors))}% {
+      border-color: nth($listColors, $i);
+    }
+  }
+}
